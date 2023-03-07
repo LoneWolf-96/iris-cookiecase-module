@@ -71,8 +71,7 @@ class IrisCookiecaseInterface(IrisModuleInterface):
 
         if hook_name in ['on_postload_case_create']:
             # Extract the Case ID from the data type
-            cid = re.search(r'\d+', str(data[0]))
-            cid = int(cid.group(0))
+            cid = int((re.search(r'\d+', str(data[0]))).group(0))
             self.log.info(f"Cookie case module running CaseID: ({cid})")
             
             return InterfaceStatus.I2Error(data=data, logs=list(self.message_queue))
