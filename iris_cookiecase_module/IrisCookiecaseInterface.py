@@ -83,7 +83,12 @@ class IrisCookiecaseInterface(IrisModuleInterface):
                     ng_id = self._case_note_group_create(cng_name=note_group_title, cid=cid)
 
                     for note in Path(note_path).iterdir():
+                        with open(note) as f:
+                            content = f.readlines()
+
                         note_title = str(note).split("/")[-1]
+                        cn_id = self._case_note_create(cn_title=note_title, cid=cid, cngid=ng_id, cncon=content)
+
 
         return InterfaceStatus.I2Error(data=data, logs=list(self.message_queue))
 
@@ -92,4 +97,13 @@ class IrisCookiecaseInterface(IrisModuleInterface):
         ng_id = add_note_group(group_title=cng_name, caseid=cid, userid=1, creationdate='2023-03-06 12:12:12')
         ng_id = int((re.search(r'\d+', str(ng_id))).group(0))
         self.log.info(f'Created note group {cng_name} (id: {ng_id}) for case id {cid}')
+
         return ng_id
+
+
+    def _case_note_create(self, cn_title: str, cid: int, cngid: int, cncon: str):  
+        cn_id = add_note(note_title=cn_title, creation_date='2023-03-06 12:12:12', caseid=cid, user_id=1, group_id=cngid, note_content=cncon)
+        cn_id = int((re.search(r'\d+', str(cn_id))).group(0))
+        self.log.info(f'Created a note {cn_title} ID ({cn_id}) for case note group {cngid} under the context of case id {cid}')
+
+        return cn_id
