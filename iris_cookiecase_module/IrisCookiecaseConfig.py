@@ -4,7 +4,7 @@
 #  IRIS cookiecase Source Code
 #  Copyright (C) 2023 - iris-cookiecase-module
 #  coding.LoneWolf-96@proton.me
-#  Created by LoneWolf-96 - 2023-03-06
+#  Created by iris-cookiecase-module - 2023-03-06
 #
 #  License MIT
 
@@ -20,7 +20,7 @@ pipeline_info = {}
 module_configuration = [
     {
         "param_name": "cookie_make_case",
-        "param_human_name": "Cookie Case",
+        "param_human_name": "Cookie cutter case",
         "param_description": "Cookie a case, so they are all uniformed to start with.",
         "default": True,
         "mandatory": True,
