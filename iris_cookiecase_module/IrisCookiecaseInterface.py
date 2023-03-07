@@ -11,6 +11,7 @@
 import traceback
 import re
 from pathlib import Path
+from os import getcwd, path
 
 import iris_interface.IrisInterfaceStatus as InterfaceStatus
 from iris_interface.IrisModuleInterface import IrisPipelineTypes, IrisModuleInterface, IrisModuleTypes
@@ -56,7 +57,6 @@ class IrisCookiecaseInterface(IrisModuleInterface):
             self.deregister_from_hook(module_id=self.module_id, iris_hook_name='on_postload_case_create')
 
 
-
     def hooks_handler(self, hook_name: str, hook_ui_name: str, data: any):
         """
         Hooks handler table. Calls corresponding methods depending on the hooks name.
@@ -73,5 +73,23 @@ class IrisCookiecaseInterface(IrisModuleInterface):
             # Extract the Case ID from the data type
             cid = int((re.search(r'\d+', str(data[0]))).group(0))
             self.log.info(f"Cookie case module running CaseID: ({cid})")
-            
-            return InterfaceStatus.I2Error(data=data, logs=list(self.message_queue))
+
+            template_path = path.join(path.dirname(__file__), "template")
+            for note_group in Path(template_path).iterdir():
+
+                if note_group.is_dir():
+                    note_group_title = str(note_group).split("/")[-1]
+                    note_path = path.join(template_path, note_group_title)
+                    ng_id = self._case_note_group_create(cng_name=note_group_title, cid=cid)
+
+                    for note in Path(note_path).iterdir():
+                        note_title = str(note).split("/")[-1]
+
+        return InterfaceStatus.I2Error(data=data, logs=list(self.message_queue))
+
+
+    def _case_note_group_create(self, cng_name: str, cid: int):
+        ng_id = add_note_group(group_title=cng_name, caseid=cid, userid=1, creationdate='2023-03-06 12:12:12')
+        ng_id = int((re.search(r'\d+', str(ng_id))).group(0))
+        self.log.info(f'Created note group {cng_name} (id: {ng_id}) for case id {cid}')
+        return ng_id
