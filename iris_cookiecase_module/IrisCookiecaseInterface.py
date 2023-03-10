@@ -83,11 +83,13 @@ class IrisCookiecaseInterface(IrisModuleInterface):
                     ng_id = self._case_note_group_create(cng_name=note_group_title, cid=cid)
 
                     for note in Path(note_path).iterdir():
-                        with open(note) as f:
-                            content = f.readlines()
-
                         note_title = str(note).split("/")[-1]
-                        cn_id = self._case_note_create(cn_title=note_title, cid=cid, cngid=ng_id, cncon=content)
+                        if "HOLDER" not in note_title:
+                            with open(note) as f:
+                                content = f.readlines()
+
+                            note_title = str(note).split("/")[-1]
+                            cn_id = self._case_note_create(cn_title=note_title, cid=cid, cngid=ng_id, cncon=content)
 
 
         return InterfaceStatus.I2Error(data=data, logs=list(self.message_queue))
